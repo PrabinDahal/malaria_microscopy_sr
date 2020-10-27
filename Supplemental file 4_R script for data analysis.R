@@ -1,11 +1,11 @@
-#===============================================================================
-# Title 	 	: Analysis of malaria microscopy Systematic Review dataset
+#============================================================================================
+# Title 	 	: Analysis of malaria microscopy Systematic Review dataset (AJTMH)
 # Version	 	: R version 3.6.3 (2020-02-29)
-# Data version	: Recieved from Debashish Das on 19-06-2020
-# Script Date	: 19-06-2020
+# Data version		: Recieved from Debashish Das on 19-06-2020
+# Script Date		: 19-06-2020
 # Analysis script	: Prabin Dahal (prabin.dahal@wwarn.org)
-# Data source 	: Supplemental file 3 on the manuscript
-#===============================================================================
+# Data source 		: Supplemental file 3 on the manuscript
+#============================================================================================
 #rm(list=ls())
 library(tidyverse)
 library(ggpubr)
@@ -19,7 +19,7 @@ library(rworldxtra)
 library(tableone)
 
 # Set working directory
-setwd("C:/Users/pdahl/Dropbox/_temp/Debu")
+setwd("C:/Users/")
 
 #===============================================================================
 # Section 1: Data management and prepare analysis dataset
@@ -32,12 +32,12 @@ all_dat <- read.csv("Supplemental file 3.csv")
 #-------------------------------------------------
 # Parasite species studied in each of the studies
 #-------------------------------------------------
-all_dat$pf <- ifelse(all_dat$Plasmodium.falciparum.included.in.the.study.=="Yes", "pf", "")
-all_dat$pv <- ifelse(all_dat$Plasmodium.vivax.included.in.the.study.=="Yes", "pv", "")
-all_dat$po <- ifelse(all_dat$Plasmodium.ovale.included.in.the.study.=="Yes", "po", "")
-all_dat$pm <- ifelse(all_dat$Plasmodium.malariae.included.in.the.study.=="Yes", "pm", "")
-all_dat$pk <- ifelse(all_dat$Plasmodium.knowlesi.included.in.the.study.=="Yes", "pk", "")
-all_dat$pmix <- ifelse(all_dat$Mixed.Infection..Pf.Pv..included.in.the.study.=="Yes", "p_mix", "")
+all_dat$pf 	<- ifelse(all_dat$Plasmodium.falciparum.included.in.the.study.=="Yes", "pf", "")
+all_dat$pv 	<- ifelse(all_dat$Plasmodium.vivax.included.in.the.study.=="Yes", "pv", "")
+all_dat$po 	<- ifelse(all_dat$Plasmodium.ovale.included.in.the.study.=="Yes", "po", "")
+all_dat$pm 	<- ifelse(all_dat$Plasmodium.malariae.included.in.the.study.=="Yes", "pm", "")
+all_dat$pk 	<- ifelse(all_dat$Plasmodium.knowlesi.included.in.the.study.=="Yes", "pk", "")
+all_dat$pmix 	<- ifelse(all_dat$Mixed.Infection..Pf.Pv..included.in.the.study.=="Yes", "p_mix", "")
 
 # A single column with parasites species studied
 all_dat$species <- paste(all_dat$pf, all_dat$pv,all_dat$po,all_dat$pm,all_dat$pk,all_dat$pmix, sep="+")
@@ -81,11 +81,11 @@ slide <- all_dat %>%
 	  filter(is.na(Repeat.Instance))
 
 slide$slide_neg_method <- ifelse(slide$Method.to.Declare.the.Slide.Negative=="High Power Fields (HPF)",
-						paste(slide$Method.to.Declare.the.Slide.Negative,slide$Number.of.HPFs.Examined,slide$Number.of.HPFs.Counted...Specify.Other, sep="."),
-							ifelse(slide$Method.to.Declare.the.Slide.Negative=="White Blood Cells (WBC)",
-						paste(slide$Method.to.Declare.the.Slide.Negative,slide$Number.of.WBCs.Counted,slide$Number.of.WBCs.Counted...Specify.Other, sep="."),
-					"Not Stated"
-			))
+				paste(slide$Method.to.Declare.the.Slide.Negative,slide$Number.of.HPFs.Examined,slide$Number.of.HPFs.Counted...Specify.Other, sep="."),
+					ifelse(slide$Method.to.Declare.the.Slide.Negative=="White Blood Cells (WBC)",
+				paste(slide$Method.to.Declare.the.Slide.Negative,slide$Number.of.WBCs.Counted,slide$Number.of.WBCs.Counted...Specify.Other, sep="."),
+			"Not Stated"
+		))
 
 # Method for estimating parasite density
 slide$parasite_density_method <- ifelse(slide$Parasite.Density.Estimation=="White Blood Cells (WBC)",
@@ -109,14 +109,14 @@ samplesize <- all_dat	%>%
 dat <- all_dat %>% 
 	  filter(is.na(Repeat.Instance))
 
-dat$Journal.of.Publication <- NULL
-dat$Region.of.Study 	<- NULL
-dat$Language.of.the.full.text.PDF <- NULL
-dat$First.Year.of.Patient.Recruitment <- NULL
-dat$Last.Year.of.Patient.Recruitment <- NULL
-dat$Repeat.Instrument <- NULL
-dat$Repeat.Instance <- NULL
-dat$Country.of.Study <- NULL
+dat$Journal.of.Publication 		<- NULL
+dat$Region.of.Study 			<- NULL
+dat$Language.of.the.full.text.PDF 	<- NULL
+dat$First.Year.of.Patient.Recruitment 	<- NULL
+dat$Last.Year.of.Patient.Recruitment 	<- NULL
+dat$Repeat.Instrument 			<- NULL
+dat$Repeat.Instance 			<- NULL
+dat$Country.of.Study 			<- NULL
 
 dat <- merge(dat ,meta_data, by="Accession.Number.of.Publication")
 dat <-merge(dat, samplesize , by="Accession.Number.of.Publication")
@@ -141,6 +141,7 @@ all_dat_species$species1 <-NULL
  
 species <- all_dat[!duplicated(all_dat$Accession.Number.of.Publication),]
 species <- subset(species , select=c("Accession.Number.of.Publication", "species1"))
+
 # Merge parasite species and Lat and Lon for the study locations
 all_dat_species <- merge (all_dat_species, species, by="Accession.Number.of.Publication")
 
@@ -167,8 +168,8 @@ legend( "bottomright", c("P.f","P.v","Both P.f and P.v","Other"), col=c("#2c7fb1
 #--------------------------
 dat   %>% 
 	dplyr::summarise(
-		number_of_trials = length(unique(Accession.Number.of.Publication))
-		)
+	number_of_trials = length(unique(Accession.Number.of.Publication))
+	)
 
 #-------------------------------
 # Regional breakdown of studies
@@ -183,14 +184,14 @@ region<- dat   %>%
 # Generate Supplemental Figure 2
 #--------------------------------
 ggbarplot(region, 
-			x 		= "Region.of.Study",
-			y 		= "number_of_trials",
-			fill		= "#00AFBB",
-			sort.val = "desc",
-      	      add		= "segments",                        
-	            rotate		= TRUE,                              
-	            dot.size	= 6,                                 
-	           font.label = list(color = "white", size = 9, 
+		x 	= "Region.of.Study",
+		y 	= "number_of_trials",
+		fill 	= "#00AFBB",
+		sort.val= "desc",
+      	      	add 	= "segments",                        
+	        rotate	= TRUE,                              
+	        dot.size= 6,                                 
+	        font.label = list(color = "white", size = 9, 
                              vjust = 0.5),               
            ggtheme = theme_pubr()                        
            )+
@@ -271,7 +272,6 @@ dat %>%
 CreateTableOne(
 		vars 		= c("Parasite.Density.Estimation" ), 
 		factorVars 	= c("Parasite.Density.Estimation"), 
-		#strata 	= "Region.of.Study", 
 		data 		= dat, 
 		test		= FALSE
 		)
@@ -280,7 +280,6 @@ CreateTableOne(
 CreateTableOne(
 		vars 		= c("Parasite.Density.Estimation" ), 
 		factorVars 	= c("Parasite.Density.Estimation"), 
-		#strata 	= "species1", 
 		data 		= dat, 
 		test		= FALSE
 		)
@@ -307,7 +306,7 @@ CreateTableOne(
 CreateTableOne(
 		vars 		= c("QA.QC.Done" ), 
 		factorVars 	= c("QA.QC.Done"), 
-		strata 	= "species1", 
+		strata 		= "species1", 
 		data 		= dat, 
 		test		= FALSE
 		)
@@ -377,16 +376,15 @@ negative <-  dat[which(dat$group=="negative"),]
 #---------------------------------------------------------
 
 a<-ggdotchart(density, 
-			x = "subgroup",
-			y = "Number",
-	           color = "Method",                                # Color by groups
-      	    #palette = c("#00AFBB", "#E7B800", "#FC4E07","#E7B800"), # Custom color palette
-	           sorting = "descending",                       # Sort value in descending order
-      	     add = "segments",                             # Add segments from y = 0 to dots
-	           rotate = TRUE,                                # Rotate vertically
-      	     group = "Method",                                # Order by groups
-	           dot.size = 6,                                 # Large dot size
-      	     label = density$Number,                        # Add mpg values as dot labels
+		x = "subgroup",
+		y = "Number",
+	        color = "Method",                             # Color by groups
+      	        sorting = "descending",                       # Sort value in descending order
+      	     	add = "segments",                             # Add segments from y = 0 to dots
+	        rotate = TRUE,                                # Rotate vertically
+      	     	group = "Method",                             # Order by groups
+	        dot.size = 6,                                 # Large dot size
+      	     	label = density$Number,                       # Add mpg values as dot labels
 	           font.label = list(color = "white", size = 9, 
                              vjust = 0.5),               # Adjust label parameters
            ggtheme = theme_pubr()                        # ggplot2 theme
@@ -403,15 +401,15 @@ a<-ggdotchart(density,
 # Table 3 data: Methods for estimating parasite density
 #---------------------------------------------------------
 b<-ggdotchart(negative , 
-			x = "subgroup",
-			y = "Number",
-	           color = "Method",                                # Color by groups
-	           sorting = "descending",                       # Sort value in descending order
+		x = "subgroup",
+		y = "Number",
+	           color = "Method",                       # Color by groups
+	           sorting = "descending",                 # Sort value in descending order
       	     add = "segments",                             # Add segments from y = 0 to dots
-	           rotate = TRUE,                                # Rotate vertically
-      	     group = "Method",                                # Order by groups
-	           dot.size = 6,                                 # Large dot size
-      	     label = negative $Number,                        # Add mpg values as dot labels
+	           rotate = TRUE,                          # Rotate vertically
+      	     group = "Method",                             # Order by groups
+	           dot.size = 6,                           # Large dot size
+      	     label = negative $Number,                     # Add mpg values as dot labels
 	           font.label = list(color = "white", size = 9, 
                              vjust = 0.5),               # Adjust label parameters
            ggtheme = theme_pubr()                        # ggplot2 theme
@@ -437,11 +435,8 @@ tiff(file="Figure_2_revised.tiff",
 		res=600, 
 		antialias = "none"
 	)
-
 plot_grid(a,b)
-
 dev.off() # End export
-
 
 #===========================================================
 # Section 4: Generation of Figure 3 on the manuscript
@@ -463,19 +458,19 @@ dat <- dput(structure(list(group = structure(c(4L, 4L, 4L, 4L, 4L, 2L, 2L,
 stain 		<- dat[which(dat$group=="Staining"),]
 giemsa_strenth 	<-  dat[which(dat$group=="Giemsa_stength"),]
 giemsa_duration	<-  dat[which(dat$group=="Giemsa_duration"),]
-Q_C 			<-  dat[which(dat$group=="Quality Control"),]
+Q_C 		<-  dat[which(dat$group=="Quality Control"),]
 
 #------------------------------------
 # Staining Method Used
 #------------------------------------
 
 a <- ggbarplot(stain , 
-			x 		= "subgroup",
-			y 		= "Number",
-			fill		= "#00AFBB",
-			sort.val = "desc",
-      	      add		= "segments",                        
-	            rotate		= TRUE,                              
+		x = "subgroup",
+		y = "Number",
+		fill= "#00AFBB",
+		sort.val = "desc",
+      	        add= "segments",                        
+	            rotate= TRUE,                              
 	            dot.size	= 6,                                 
 	           font.label = list(color = "white", size = 9, 
                              vjust = 0.5),               
@@ -493,12 +488,12 @@ a <- ggbarplot(stain ,
 # Giemsa duration Used
 #------------------------------------
 b <- ggbarplot(giemsa_duration, 
-			x 		= "subgroup",
-			y 		= "Number",
-			fill		= "#00AFBB",
+			x = "subgroup",
+			y = "Number",
+			fill= "#00AFBB",
 			 sort.val = "desc",
-      	     add		= "segments",                        
-	           rotate		= TRUE,                              
+      	     		add	= "segments",                        
+	           rotate	= TRUE,                              
 	           dot.size	= 6,                                 
 	           font.label = list(color = "white", size = 9, 
                              vjust = 0.5),               
@@ -516,15 +511,13 @@ b <- ggbarplot(giemsa_duration,
 # Giemsa strenth Used
 #------------------------------------
 c <- ggbarplot(giemsa_strenth , 
-			x 		= "subgroup",
-			y 		= "Number",
-			#facet.by	= "Group",
-			fill		= "#00AFBB",
-			 sort.val = "desc",
-      	     add		= "segments",                        
-	           rotate		= TRUE,                              
+			x = "subgroup",
+			y = "Number",
+			fill	= "#00AFBB",
+			sort.val = "desc",
+      	     		add= "segments",                        
+	           rotate= TRUE,                              
 	           dot.size	= 6,                                 
-      	     #label 		= stain $Number,            
 	           font.label = list(color = "white", size = 7, 
                              vjust = 0.5),               
            ggtheme = theme_pubr()                        
@@ -536,8 +529,6 @@ c <- ggbarplot(giemsa_strenth ,
 		theme(axis.text.x = element_text(size=7, angle=0),
 		          axis.text.y = element_text(size=7),
 			 axis.title=element_text(size=8,face="bold"))
-
-
 ###########################################################################################
 # Use cowplot libray to create a 2 by 2 panel & export as high resolution graph (600 dpi)
 ###########################################################################################
@@ -556,4 +547,3 @@ plot_grid(a,b,c, nrow = 1)
 dev.off() # End export
 
 # End (Not Run)
-
